@@ -1,4 +1,5 @@
 import sys
+import os
 
 # SQLite fix for Streamlit Cloud (Linux only)
 if sys.platform != "win32":
