@@ -7,7 +7,7 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # Groq model
-LLM_MODEL = "llama3-70b-8192"
+LLM_MODEL = "llama-3.1-8b-instant"
 LLM_TEMPERATURE = 0.2
 
 # Chunking
