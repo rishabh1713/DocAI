@@ -1,1 +1,2 @@
-from .file_handler import save_uploaded_file, delete_file
+
+from .file_handler import save_uploaded_file, delete_file, is_image_file

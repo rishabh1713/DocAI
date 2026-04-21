@@ -1,14 +1,28 @@
 from pypdf import PdfReader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chromadb
+
 from config.settings import CHUNK_SIZE, CHUNK_OVERLAP, CHROMA_COLLECTION_NAME
+from utils.file_handler import is_image_file
+from services.ocr_service import extract_text_from_image  # ← THIS was missing
 
 
 def _extract_text(file_path: str) -> str:
-    """Extract raw text from PDF or TXT file."""
-    if file_path.endswith(".pdf"):
+    """
+    Extract raw text from file.
+    Routes to correct extractor based on file type:
+      - Image files  → EasyOCR
+      - PDF files    → PyPDF
+      - TXT files    → plain read
+    """
+    if is_image_file(file_path):
+        # ← OCR path — was completely missing before
+        return extract_text_from_image(file_path)
+
+    elif file_path.lower().endswith(".pdf"):
         reader = PdfReader(file_path)
         return "".join(page.extract_text() or "" for page in reader.pages)
+
     else:
         with open(file_path, "r", encoding="utf-8") as f:
             return f.read()

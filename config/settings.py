@@ -20,6 +20,9 @@ TOP_K_RESULTS = 3
 # Vector DB
 CHROMA_COLLECTION_NAME = "study_notes"
 
-# File upload
+# File upload — includes image types now
 UPLOAD_DIR = "uploads"
-ALLOWED_EXTENSIONS = [".pdf", ".txt"]
+ALLOWED_EXTENSIONS = [
+    ".pdf", ".txt",
+    ".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".webp"
+]
