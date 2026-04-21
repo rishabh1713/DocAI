@@ -7,8 +7,7 @@ Upload your notes → Ask questions → Get answers grounded in your own materia
 
 ## 🚀 Live Demo
 
-> Deployed on Streamlit Cloud → [your-app-link-here](https://share.streamlit.io)
-
+> Deployed on Streamlit Cloud → [https://docai17r.streamlit.app/](https://share.streamlit.io)
 ---
 
 ## 🧠 How It Works
