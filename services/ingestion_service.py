@@ -1,3 +1,4 @@
+import os
 from pypdf import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chromadb
