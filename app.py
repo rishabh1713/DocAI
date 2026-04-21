@@ -1,3 +1,8 @@
+import os
+
+api_key = os.getenv("GROQ_API_KEY")
+
+
 import sys
 
 # SQLite fix for Streamlit Cloud (Linux only) — skip on Windows
@@ -94,6 +99,5 @@ if question := st.chat_input("Ask a question about your notes..."):
             st.write(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
 
-            import os
-
-api_key = os.getenv("GROQ_API_KEY")
+           
+        
