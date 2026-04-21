@@ -93,3 +93,7 @@ if question := st.chat_input("Ask a question about your notes..."):
                     answer = f"❌ Something went wrong: {e}"
             st.write(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
+
+            import os
+
+api_key = os.getenv("GROQ_API_KEY")
