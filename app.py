@@ -1,5 +1,5 @@
 import sys
-import os
+
 
 # SQLite fix for Streamlit Cloud (Linux only)
 if sys.platform != "win32":
@@ -10,6 +10,7 @@ if sys.platform != "win32":
         pass
 
 import streamlit as st
+import os
 from services import ingest_file, retrieve_relevant_chunks, generate_answer, clear_collection
 from utils import save_uploaded_file, delete_file
 
