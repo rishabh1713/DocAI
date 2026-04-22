@@ -11,14 +11,14 @@ from services.vision_ocr_service import extract_text_from_image_fast
 from services.ocr_service import extract_text_from_image
 
 # ── Tuning constants ──────────────────────────────────────────────────────────
-DPI = 120                # lower = faster rendering, still readable
-MIN_CHARS_TO_SKIP_OCR = 100   # pages with more chars than this skip OCR
-BATCH_SIZE = 10          # process 10 pages at a time
-RATE_LIMIT_DELAY = 2     # seconds to wait between batches
+DPI = 120
+MIN_CHARS_TO_SKIP_OCR = 100
+BATCH_SIZE = 10
+RATE_LIMIT_DELAY = 2
 
 
 def _pdf_page_to_pil(page) -> Image.Image:
-    """Render a PDF page to PIL image."""
+    """Render a PDF page to a PIL Image."""
     zoom = DPI / 72
     matrix = fitz.Matrix(zoom, zoom)
     pixmap = page.get_pixmap(matrix=matrix, alpha=False)
@@ -26,17 +26,17 @@ def _pdf_page_to_pil(page) -> Image.Image:
 
 
 def _is_image_only_page(page) -> bool:
-    """Return True if page has no selectable text — needs OCR."""
+    """Return True if page has little/no selectable text."""
     direct_text = page.get_text("text").strip()
     return len(direct_text) < MIN_CHARS_TO_SKIP_OCR
 
 
 def _process_single_page(page, page_number: int) -> str:
     """
-    Process one page smartly:
-    - Text page  → direct extract, zero API calls
-    - Image page → Groq Vision OCR
-    - Mixed page → direct text + OCR for image content
+    Process one PDF page smartly:
+    - Pure text page  → direct extraction, no API call
+    - Mixed page      → direct text + Groq Vision OCR
+    - Image-only page → full Groq Vision OCR
     """
     page_label = f"[Page {page_number + 1}]"
     direct_text = page.get_text("text").strip()
@@ -45,11 +45,9 @@ def _process_single_page(page, page_number: int) -> str:
 
     try:
         if has_enough_text and not has_images:
-            # ── Pure text page — fastest path, no API call ────────
             return f"\n{page_label}\n{direct_text}\n"
 
         elif has_enough_text and has_images:
-            # ── Mixed page — text + OCR for image parts ───────────
             pil_image = _pdf_page_to_pil(page)
             ocr_text = extract_text_from_image_fast(pil_image)
             result = f"\n{page_label}\n{direct_text}\n"
@@ -58,7 +56,6 @@ def _process_single_page(page, page_number: int) -> str:
             return result
 
         else:
-            # ── Image-only page — full OCR ─────────────────────────
             pil_image = _pdf_page_to_pil(page)
             ocr_text = extract_text_from_image_fast(pil_image)
             if ocr_text:
@@ -69,7 +66,6 @@ def _process_single_page(page, page_number: int) -> str:
 
     except Exception as e:
         print(f"Warning: page {page_number + 1} failed: {e}")
-        # fallback — return whatever direct text we have
         return f"\n{page_label}\n{direct_text}\n" if direct_text else ""
 
 
@@ -84,21 +80,16 @@ def _extract_text_from_pdf(file_path: str, progress_callback=None) -> str:
     total_pages = len(pdf_document)
     full_text = ""
 
-    # Count how many pages actually need OCR
     image_pages = sum(
         1 for i in range(total_pages)
         if _is_image_only_page(pdf_document[i])
     )
     text_pages = total_pages - image_pages
+    print(f"PDF: {total_pages} pages — {text_pages} text, {image_pages} need OCR")
 
-    print(f"PDF has {total_pages} pages: {text_pages} text, {image_pages} need OCR")
-
-    # Process in batches to avoid rate limits
     for batch_start in range(0, total_pages, BATCH_SIZE):
         batch_end = min(batch_start + BATCH_SIZE, total_pages)
-        batch_pages = range(batch_start, batch_end)
 
-        # Update progress
         progress = int((batch_start / total_pages) * 100)
         if progress_callback:
             progress_callback(
@@ -106,14 +97,11 @@ def _extract_text_from_pdf(file_path: str, progress_callback=None) -> str:
                 f"Processing pages {batch_start + 1}–{batch_end} of {total_pages}..."
             )
 
-        # Process each page in this batch
-        for page_number in batch_pages:
+        for page_number in range(batch_start, batch_end):
             page = pdf_document[page_number]
             page_text = _process_single_page(page, page_number)
             full_text += page_text
 
-        # Wait between batches ONLY if next batch has OCR pages
-        # (no need to wait if all remaining pages are text)
         if batch_end < total_pages:
             next_batch_has_ocr = any(
                 _is_image_only_page(pdf_document[i])
@@ -152,8 +140,8 @@ def _chunk_text(text: str) -> list[str]:
 
 def ingest_file(file_path: str, progress_callback=None) -> int:
     """
-    Full pipeline: file → extract → chunk → store.
-    progress_callback(percent, message) is called during PDF processing.
+    Full pipeline: file → extract → chunk → store in ChromaDB.
+    progress_callback(percent, message) called during processing.
     Returns number of chunks stored.
     """
     text = _extract_text(file_path, progress_callback)
@@ -166,7 +154,6 @@ def ingest_file(file_path: str, progress_callback=None) -> int:
     client = chromadb.Client()
     collection = client.get_or_create_collection(CHROMA_COLLECTION_NAME)
 
-    # Clear old data first to avoid ID conflicts on retry
     try:
         existing = collection.get()
         if existing["ids"]:
@@ -184,7 +171,7 @@ def ingest_file(file_path: str, progress_callback=None) -> int:
 
 
 def clear_collection():
-    """Delete all stored notes from vector DB."""
+    """Delete all stored notes from the vector DB."""
     client = chromadb.Client()
     try:
         client.delete_collection(CHROMA_COLLECTION_NAME)
