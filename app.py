@@ -1,5 +1,5 @@
 import sys
-
+import os
 
 # SQLite fix for Streamlit Cloud (Linux only)
 if sys.platform != "win32":
@@ -10,9 +10,11 @@ if sys.platform != "win32":
         pass
 
 import streamlit as st
-import os
 from services import ingest_file, retrieve_relevant_chunks, generate_answer, clear_collection
 from utils import save_uploaded_file, delete_file
+
+# Make sure uploads folder exists for temp image processing
+os.makedirs("uploads", exist_ok=True)
 
 st.set_page_config(
     page_title="AI Study Assistant",
@@ -33,7 +35,6 @@ with st.sidebar:
 
     uploaded_file = st.file_uploader(
         "PDF, TXT or Image (JPG, PNG...)",
-        # ← image types added here
         type=["pdf", "txt", "png", "jpg", "jpeg", "bmp", "tiff", "webp"]
     )
 
@@ -46,19 +47,31 @@ with st.sidebar:
             st.info(f"📄 Document detected ({ext})")
 
         if st.button("⚡ Process File", type="primary", use_container_width=True):
-            with st.spinner("Reading and indexing your notes..."):
-                try:
-                    file_path = save_uploaded_file(uploaded_file)
-                    num_chunks = ingest_file(file_path)
-                    delete_file(file_path)
-                    st.session_state.notes_loaded = True
-                    st.success(f"✅ Done! Indexed {num_chunks} chunks.")
-                except RuntimeError as e:
-                    st.error(f"❌ Runtime Error: {e}")
-                except ValueError as e:
-                    st.error(f"❌ Value Error: {e}")
-                except Exception as e:
-                    st.error(f"❌ Unexpected Error: {type(e).__name__}: {e}")
+            progress = st.progress(0, text="Starting...")
+            try:
+                progress.progress(20, text="Saving file...")
+                file_path = save_uploaded_file(uploaded_file)
+
+                progress.progress(40, text="Extracting text and running OCR...")
+                num_chunks = ingest_file(file_path)
+
+                progress.progress(80, text="Indexing into vector database...")
+                delete_file(file_path)
+
+                progress.progress(100, text="Done!")
+                st.session_state.notes_loaded = True
+                st.success(f"✅ Done! Indexed {num_chunks} chunks.")
+                progress.empty()
+
+            except RuntimeError as e:
+                st.error(f"❌ Runtime Error: {e}")
+                progress.empty()
+            except ValueError as e:
+                st.error(f"❌ Value Error: {e}")
+                progress.empty()
+            except Exception as e:
+                st.error(f"❌ Unexpected Error: {type(e).__name__}: {e}")
+                progress.empty()
 
     st.divider()
 
