@@ -9,11 +9,11 @@ if sys.platform != "win32":
     except ImportError:
         pass
 
+import fitz
 import streamlit as st
 from services import ingest_file, retrieve_relevant_chunks, generate_answer, clear_collection
 from utils import save_uploaded_file, delete_file
 
-# Make sure uploads folder exists for temp image processing
 os.makedirs("uploads", exist_ok=True)
 
 st.set_page_config(
@@ -39,7 +39,6 @@ with st.sidebar:
     )
 
     if uploaded_file:
-        # Show file type detected so user knows OCR will run
         ext = uploaded_file.name.split(".")[-1].upper()
         if ext in ["PNG", "JPG", "JPEG", "BMP", "TIFF", "WEBP"]:
             st.info(f"🖼️ Image detected ({ext}) — OCR will extract text")
@@ -47,31 +46,88 @@ with st.sidebar:
             st.info(f"📄 Document detected ({ext})")
 
         if st.button("⚡ Process File", type="primary", use_container_width=True):
-            progress = st.progress(0, text="Starting...")
+            progress_bar = st.progress(0, text="Starting...")
+            status_text = st.empty()   # ← this shows detailed status below bar
+
+            def update_progress(percent: int, message: str):
+                # Top bar shows percent + page info
+                progress_bar.progress(percent, text=message)
+                # Bottom text shows what's actually happening right now
+                if percent < 20:
+                    status_text.info("📂 Saving your file...")
+                elif percent < 50:
+                    status_text.info("🔍 Extracting text from pages...")
+                elif percent < 70:
+                    status_text.info("🤖 Running OCR on image pages...")
+                elif percent < 90:
+                    status_text.info("🗄️ Indexing into vector database...")
+                elif percent < 100:
+                    status_text.info("🧹 Cleaning up temp files...")
+                else:
+                    status_text.success("✅ All done!")
+
             try:
-                progress.progress(20, text="Saving file...")
+                update_progress(5, "Starting...")
                 file_path = save_uploaded_file(uploaded_file)
 
-                progress.progress(40, text="Extracting text and running OCR...")
-                num_chunks = ingest_file(file_path)
+                if ext == "PDF":
+                    temp_pdf = fitz.open(file_path)
+                    total_pages = len(temp_pdf)
+                    temp_pdf.close()
 
-                progress.progress(80, text="Indexing into vector database...")
-                delete_file(file_path)
+                    if total_pages > 50:
+                        st.warning(
+                            f"⏳ Large PDF detected ({total_pages} pages). "
+                            f"This may take {total_pages // 20}–{total_pages // 10} "
+                            f"minutes. Please keep this tab open."
+                        )
 
-                progress.progress(100, text="Done!")
-                st.session_state.notes_loaded = True
-                st.success(f"✅ Done! Indexed {num_chunks} chunks.")
-                progress.empty()
+                    update_progress(10, f"Reading {total_pages} pages...")
+                    num_chunks = ingest_file(
+                        file_path,
+                        progress_callback=update_progress
+                    )
+
+                    update_progress(95, "Almost done...")
+                    delete_file(file_path)
+
+                    progress_bar.progress(100, text="Complete!")
+                    status_text.empty()
+                    st.session_state.notes_loaded = True
+                    st.success(
+                        f"✅ Done! Processed {total_pages} pages "
+                        f"→ {num_chunks} chunks indexed."
+                    )
+                    progress_bar.empty()
+
+                else:
+                    update_progress(30, "Extracting content...")
+                    num_chunks = ingest_file(
+                        file_path,
+                        progress_callback=update_progress
+                    )
+
+                    update_progress(95, "Almost done...")
+                    delete_file(file_path)
+
+                    progress_bar.progress(100, text="Complete!")
+                    status_text.empty()
+                    st.session_state.notes_loaded = True
+                    st.success(f"✅ Done! Indexed {num_chunks} chunks.")
+                    progress_bar.empty()
 
             except RuntimeError as e:
                 st.error(f"❌ Runtime Error: {e}")
-                progress.empty()
+                progress_bar.empty()
+                status_text.empty()
             except ValueError as e:
                 st.error(f"❌ Value Error: {e}")
-                progress.empty()
+                progress_bar.empty()
+                status_text.empty()
             except Exception as e:
                 st.error(f"❌ Unexpected Error: {type(e).__name__}: {e}")
-                progress.empty()
+                progress_bar.empty()
+                status_text.empty()
 
     st.divider()
 
@@ -90,12 +146,14 @@ with st.sidebar:
         st.rerun()
 
     st.divider()
-    st.caption("Built with Streamlit + Groq + ChromaDB + EasyOCR")
+    st.caption("Built with Streamlit + Groq + ChromaDB")
 
+# ── Chat history ──────────────────────────────────────────────────────────────
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.write(msg["content"])
 
+# ── Chat input ────────────────────────────────────────────────────────────────
 if question := st.chat_input("Ask a question about your notes..."):
     if not st.session_state.notes_loaded:
         st.error("⚠️ Please upload and process a file first!")
@@ -112,4 +170,6 @@ if question := st.chat_input("Ask a question about your notes..."):
                 except Exception as e:
                     answer = f"❌ Something went wrong: {e}"
             st.write(answer)
-            st.session_state.messages.append({"role": "assistant", "content": answer})
+            st.session_state.messages.append(
+                {"role": "assistant", "content": answer}
+            )
