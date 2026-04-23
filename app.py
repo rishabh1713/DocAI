@@ -56,8 +56,6 @@ if dark:
     chip_bg        = "rgba(99, 102, 241, 0.1)"
     chip_border    = "rgba(99, 102, 241, 0.2)"
     chip_text      = "#818cf8"
-    input_bg       = "#27272a" 
-    input_border   = "rgba(255, 255, 255, 0.25)"
     toggle_icon    = "☀️"
     upload_bg      = "rgba(59, 130, 246, 0.08)"
     upload_border  = "rgba(99, 102, 241, 0.4)"
@@ -90,8 +88,6 @@ else:
     chip_bg        = "rgba(79, 70, 229, 0.08)"
     chip_border    = "rgba(79, 70, 229, 0.2)"
     chip_text      = "#4f46e5"
-    input_bg       = "#ffffff"
-    input_border   = "rgba(0, 0, 0, 0.2)"
     toggle_icon    = "🌙"
     upload_bg      = "rgba(219, 234, 254, 0.5)"
     upload_border  = "rgba(96, 165, 250, 0.5)"
@@ -162,54 +158,63 @@ header[data-testid="stHeader"] {{
     color: {sidebar_label} !important;
 }}
 
-/* New Theme Toggle Sidebar Button Styling */
-div.stButton > button[kind="secondary"]:has(div:contains("{toggle_icon}")) {{
+/* Target the theme toggle button strictly positioned top right */
+[data-testid="stSidebar"] [data-testid="column"]:nth-child(2) button {{
     background: {bg_card} !important;
     border: 1px solid {border_color} !important;
     border-radius: 8px !important;
-    padding: 0.2rem 0.6rem !important;
+    padding: 0.35rem 0.5rem !important;
     box-shadow: {shadow} !important;
     transition: all 0.2s ease;
-    font-size: 1.1rem !important;
-    margin-bottom: 10px;
+    font-size: 1.2rem !important;
+    width: 100%;
 }}
-div.stButton > button[kind="secondary"]:has(div:contains("{toggle_icon}")):hover {{
+[data-testid="stSidebar"] [data-testid="column"]:nth-child(2) button:hover {{
     background: {chip_bg} !important;
     border-color: {accent1} !important;
     transform: translateY(-1px);
 }}
 
-/* Fix the "hazy" Uploader issue and style it cleanly */
+/* Fix the Uploader styling and hide ALL native text properly */
 [data-testid="stSidebar"] [data-testid="stFileUploader"] {{
     background: rgba(37, 99, 235, 0.08) !important;
     border: 1.5px dashed #3b82f6 !important;
     border-radius: 12px !important;
     transition: all 0.2s ease;
-    padding: 10px !important;
+    padding: 15px 10px !important;
+    margin-top: 15px !important;
 }}
 [data-testid="stSidebar"] [data-testid="stFileUploader"]:hover {{
     background: rgba(37, 99, 235, 0.15) !important;
     border-color: #2563eb !important;
 }}
-/* Override native text nicely */
+/* Hide native 'Drag and drop' text container */
 [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stMarkdownContainer"] p {{
-    color: #3b82f6 !important;
-    font-weight: 600 !important;
-    text-align: center;
+    display: none !important; 
 }}
 [data-testid="stSidebar"] [data-testid="stFileUploader"] small {{
     color: #93c5fd !important;
+    display: block !important;
+    margin-top: 8px !important;
 }}
-/* Browse Docs Button Injection */
+/* Browse Docs Button Injection & Hiding native span */
 [data-testid="stSidebar"] [data-testid="stFileUploader"] button {{
     background: #2563eb !important;
     border: none !important;
-    color: transparent !important;
     border-radius: 6px !important;
     padding: 0.5rem 0.8rem !important;
     position: relative;
     width: 100%;
+    color: transparent !important;
 }}
+/* Hide the native text node span inside the button */
+[data-testid="stSidebar"] [data-testid="stFileUploader"] button span, 
+[data-testid="stSidebar"] [data-testid="stFileUploader"] button p {{
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}}
+/* Inject clean 'Browse Docs' text */
 [data-testid="stSidebar"] [data-testid="stFileUploader"] button::before {{
     content: "Browse Docs";
     position: absolute;
@@ -220,42 +225,23 @@ div.stButton > button[kind="secondary"]:has(div:contains("{toggle_icon}")):hover
     font-weight: 600 !important;
     font-size: 0.95rem !important;
     letter-spacing: 0.02em;
+    z-index: 10;
 }}
 [data-testid="stSidebar"] [data-testid="stFileUploader"] button:hover {{
     background: #1d4ed8 !important;
 }}
 
-/* Modern Upload Label Container positioned BELOW the box */
-.upload-doc-label-container {{
-    margin-top: 1rem;
-    padding: 1.25rem 1rem;
-    background: {bg_card};
-    border-radius: 12px;
-    border: 1px solid {border_color};
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: {shadow};
+/* Animated Upward Arrow CSS */
+@keyframes bounceUp {{
+    0%, 100% {{ transform: translateY(0); }}
+    50% {{ transform: translateY(-6px); }}
 }}
-.upload-doc-label-container::after {{
-    content: "📁";
-    position: absolute;
-    font-size: 6rem;
-    right: -20px;
-    bottom: -30px;
-    opacity: 0.04;
-    z-index: 0;
-}}
-.upload-doc-text {{
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: {text_primary};
-    position: relative;
-    z-index: 1;
-    letter-spacing: -0.01em;
+.animated-arrow-up {{
+    display: inline-block;
+    animation: bounceUp 1.5s infinite ease-in-out;
+    color: #3b82f6;
+    font-size: 1.3rem;
+    font-weight: 800;
 }}
 
 [data-testid="stSidebar"] .stButton > button {{
@@ -333,19 +319,19 @@ div.stButton > button[kind="secondary"]:has(div:contains("{toggle_icon}")):hover
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 5px 0 25px 0;
+    padding: 5px 0 15px 0;
 }}
 .custom-icon {{
-    width: 32px;
-    height: 38px;
+    width: 38px;
+    height: 44px;
     background: {logo_gradient};
-    border-radius: 4px 14px 14px 4px;
+    border-radius: 4px 16px 16px 4px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding-left: 6px;
-    gap: 5px;
+    padding-left: 8px;
+    gap: 6px;
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
     position: relative;
 }}
@@ -357,20 +343,20 @@ div.stButton > button[kind="secondary"]:has(div:contains("{toggle_icon}")):hover
     width: 100%;
     height: 6px;
     background: {logo_gradient};
-    border-radius: 0 0 14px 4px;
+    border-radius: 0 0 16px 4px;
     z-index: -1;
     opacity: 0.6;
 }}
 .custom-icon-line {{
-    width: 16px;
+    width: 18px;
     height: 3px;
     background: #ffffff;
     border-radius: 2px;
 }}
-.custom-icon-line.short {{ width: 10px; }}
+.custom-icon-line.short {{ width: 12px; }}
 .custom-text {{
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 2.2rem;
+    font-size: 2.6rem; 
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1;
@@ -494,23 +480,35 @@ div.stButton > button[kind="secondary"]:has(div:contains("{toggle_icon}")):hover
     font-family: 'JetBrains Mono', monospace !important; font-size: 0.85em !important; color: {accent1} !important;
 }}
 
-/* ── High Contrast Chat input ── */
+/* ── Black Container & Grey Input ── */
 [data-testid="stBottom"] > div {{
     padding: 1rem 1rem 1.5rem 1rem !important;
     background: linear-gradient(to top, {bg_main} 80%, transparent) !important; border: none !important;
 }}
-[data-testid="stChatInput"] {{ background: transparent !important; border: none !important; padding: 0 !important; max-width: 860px !important; margin: 0 auto !important; }}
-[data-testid="stChatInput"] textarea {{
-    background: #1e3a8a !important; /* Deep vibrant blue */
-    border: 1px solid #3b82f6 !important;
-    border-radius: 12px !important; 
-    color: #ffffff !important; /* Contrasty white text */
-    font-size: 0.95rem !important; min-height: 52px !important; max-height: 150px !important;
-    padding: 14px 45px 14px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important; transition: border-color 0.2s ease;
+[data-testid="stChatInput"] {{ 
+    background-color: #000000 !important; /* Pure black surrounding box */
+    border: 1px solid rgba(255,255,255,0.1) !important; 
+    padding: 8px !important; 
+    border-radius: 16px !important;
+    max-width: 860px !important; 
+    margin: 0 auto !important; 
 }}
-[data-testid="stChatInput"] textarea:focus {{ border-color: #60a5fa !important; box-shadow: 0 0 0 2px #60a5fa !important; }}
+[data-testid="stChatInput"] textarea {{
+    background-color: #27272a !important; /* Sleek grey text bar */
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    border-radius: 12px !important; 
+    color: #ffffff !important; /* White text for high contrast */
+    font-size: 0.95rem !important; min-height: 52px !important; max-height: 150px !important;
+    padding: 14px 45px 14px 18px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; transition: all 0.2s ease;
+}}
+[data-testid="stChatInput"] textarea:focus {{ border-color: #3b82f6 !important; box-shadow: 0 0 0 2px rgba(59,130,246,0.3) !important; }}
 [data-testid="stChatInput"] textarea::placeholder {{
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+}}
+/* Adjust send icon color */
+[data-testid="stChatInput"] button svg {{
+    fill: #3b82f6 !important;
+    color: #3b82f6 !important;
 }}
 
 /* ── Suggestions Buttons ── */
@@ -545,10 +543,12 @@ st.markdown(f"""
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     
-    # Theme toggle placed clearly ABOVE the DocAI symbol
-    if st.button(toggle_icon, key="theme_toggle", help="Toggle dark/light mode"):
-        st.session_state.dark_mode = not st.session_state.dark_mode
-        st.rerun()
+    # 1. Theme toggle placed strictly in the top right corner above the DocAI logo
+    col_empty, col_toggle = st.columns([4, 1])
+    with col_toggle:
+        if st.button(toggle_icon, key="theme_toggle", help="Toggle dark/light mode"):
+            st.session_state.dark_mode = not st.session_state.dark_mode
+            st.rerun()
 
     # --- Custom Logo Design injected here ---
     st.markdown(f"""
@@ -564,17 +564,17 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # 1. Upload box (Styled with "Browse Docs" via CSS pseudo element) placed FIRST
+    # File Uploader
     uploaded_file = st.file_uploader(
         "Upload file",
         type=["pdf", "txt", "png", "jpg", "jpeg", "bmp", "tiff", "webp"],
         label_visibility="collapsed"
     )
 
-    # 2. Upload Document text placed BELOW the box with background icon logic
+    # 3. Upload Document Header with Animated Upward Arrow placed BELOW the upload box
     st.markdown(f"""
-    <div class="upload-doc-label-container">
-        <span class="upload-doc-text">Upload Documents</span>
+    <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 700; color: {text_primary}; margin-top: 5px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        Upload Documents <span class="animated-arrow-up">↑</span>
     </div>
     """, unsafe_allow_html=True)
 
