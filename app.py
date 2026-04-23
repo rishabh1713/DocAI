@@ -16,6 +16,15 @@ from utils import save_uploaded_file, delete_file
 
 os.makedirs("uploads", exist_ok=True)
 
+# ── Helper to load local logo as base64 for CSS injection ─────────────────────
+def get_image_base64(filepath):
+    if os.path.exists(filepath):
+        with open(filepath, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    return None
+
+logo_b64 = get_image_base64("logo.jpg")
+
 st.set_page_config(
     page_title="DocAI – Study Assistant",
     page_icon="📘",
@@ -109,6 +118,93 @@ else:
 
 logo_gradient = "linear-gradient(135deg, #2563eb, #9333ea)"
 
+# Dynamic background CSS based on logo presence
+if logo_b64:
+    welcome_bg_css = f"""
+    background: url('data:image/jpeg;base64,{logo_b64}') no-repeat center center;
+    background-size: cover;
+    filter: blur(14px);
+    opacity: 0.35;
+    """
+else:
+    welcome_bg_css = """
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    filter: blur(40px);
+    """
+
+# ── FIX: Check if a file is uploaded to dynamically disable overlapping CSS ──
+has_file = st.session_state.get("doc_uploader") is not None
+
+if not has_file:
+    uploader_css = f"""
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {{
+        background: rgba(37, 99, 235, 0.08) !important;
+        border: 1.5px dashed #3b82f6 !important;
+        border-radius: 12px !important;
+        transition: all 0.2s ease;
+        padding: 15px 10px !important;
+        margin-top: 15px !important;
+    }}
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"]:hover {{
+        background: rgba(37, 99, 235, 0.15) !important;
+        border-color: #2563eb !important;
+    }}
+    /* Hide native 'Drag and drop' text container */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"] p {{
+        display: none !important; 
+    }}
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small {{
+        color: #93c5fd !important;
+        display: block !important;
+        margin-top: 8px !important;
+    }}
+    /* Browse Docs Button Injection & Hiding native span */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button {{
+        background: #2563eb !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 0.5rem 0.8rem !important;
+        position: relative;
+        width: 100%;
+        color: transparent !important;
+    }}
+    /* Hide the native text node span inside the button */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button span, 
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button p {{
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }}
+    /* Inject clean 'Browse Docs' text */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button::before {{
+        content: "Browse Docs";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex; justify-content: center; align-items: center;
+        color: #ffffff !important;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        letter-spacing: 0.02em;
+        z-index: 10;
+    }}
+    """
+else:
+    # When file exists, turn OFF the heavy custom styling so the active card looks normal
+    uploader_css = f"""
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] {{
+        margin-top: 15px !important;
+    }}
+    /* Give the uploaded file card a neat UI */
+    [data-testid="stSidebar"] [data-testid="stUploadedFile"] {{
+        background: {bg_card} !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 8px !important;
+        padding: 4px !important;
+    }}
+    """
+
+
 # ── Clean, Modern CSS Injection ───────────────────────────────────────────────
 st.markdown(f"""
 <style>
@@ -158,78 +254,35 @@ header[data-testid="stHeader"] {{
     color: {sidebar_label} !important;
 }}
 
-/* Target the theme toggle button strictly positioned top right */
-[data-testid="stSidebar"] [data-testid="column"]:nth-child(2) button {{
+/* ── FIX: Floating Theme Toggle in Main Area ── */
+/* Positions it beside/behind the sidebar layer, at the top left of the block container */
+.main .block-container {{
+    position: relative !important;
+}}
+div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid="element-container"] {{
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    z-index: 100001;
+    width: auto;
+}}
+div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid="element-container"] button {{
     background: {bg_card} !important;
     border: 1px solid {border_color} !important;
     border-radius: 8px !important;
-    padding: 0.35rem 0.5rem !important;
+    padding: 0.4rem 0.6rem !important;
     box-shadow: {shadow} !important;
     transition: all 0.2s ease;
     font-size: 1.2rem !important;
-    width: 100%;
 }}
-[data-testid="stSidebar"] [data-testid="column"]:nth-child(2) button:hover {{
+div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid="element-container"] button:hover {{
     background: {chip_bg} !important;
     border-color: {accent1} !important;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }}
 
-/* Fix the Uploader styling and hide ALL native text properly */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] {{
-    background: rgba(37, 99, 235, 0.08) !important;
-    border: 1.5px dashed #3b82f6 !important;
-    border-radius: 12px !important;
-    transition: all 0.2s ease;
-    padding: 15px 10px !important;
-    margin-top: 15px !important;
-}}
-[data-testid="stSidebar"] [data-testid="stFileUploader"]:hover {{
-    background: rgba(37, 99, 235, 0.15) !important;
-    border-color: #2563eb !important;
-}}
-/* Hide native 'Drag and drop' text container */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stMarkdownContainer"] p {{
-    display: none !important; 
-}}
-[data-testid="stSidebar"] [data-testid="stFileUploader"] small {{
-    color: #93c5fd !important;
-    display: block !important;
-    margin-top: 8px !important;
-}}
-/* Browse Docs Button Injection & Hiding native span */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] button {{
-    background: #2563eb !important;
-    border: none !important;
-    border-radius: 6px !important;
-    padding: 0.5rem 0.8rem !important;
-    position: relative;
-    width: 100%;
-    color: transparent !important;
-}}
-/* Hide the native text node span inside the button */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] button span, 
-[data-testid="stSidebar"] [data-testid="stFileUploader"] button p {{
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-}}
-/* Inject clean 'Browse Docs' text */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] button::before {{
-    content: "Browse Docs";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: flex; justify-content: center; align-items: center;
-    color: #ffffff !important;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600 !important;
-    font-size: 0.95rem !important;
-    letter-spacing: 0.02em;
-    z-index: 10;
-}}
-[data-testid="stSidebar"] [data-testid="stFileUploader"] button:hover {{
-    background: #1d4ed8 !important;
-}}
+/* Dynamic File Uploader Styles injected here */
+{uploader_css}
 
 /* Animated Upward Arrow CSS */
 @keyframes bounceUp {{
@@ -319,7 +372,7 @@ header[data-testid="stHeader"] {{
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 5px 0 15px 0;
+    padding: 10px 0 15px 0;
 }}
 .custom-icon {{
     width: 38px;
@@ -379,20 +432,17 @@ header[data-testid="stHeader"] {{
 .welcome-wrap {{
     position: relative;
     max-width: 640px;
-    margin: 2rem auto;
+    margin: 4rem auto;
     border-radius: 24px;
-    overflow: hidden;
 }}
 .welcome-logo-bg {{
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-    filter: blur(40px);
-    z-index: 0;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    {welcome_bg_css}
+    z-index: -1; 
     pointer-events: none;
 }}
 .welcome-card {{
@@ -404,8 +454,8 @@ header[data-testid="stHeader"] {{
     padding: 3rem 2.5rem;
     text-align: center;
     box-shadow: {shadow};
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }}
 .welcome-title {{
     color: {text_primary};
@@ -480,7 +530,7 @@ header[data-testid="stHeader"] {{
     font-family: 'JetBrains Mono', monospace !important; font-size: 0.85em !important; color: {accent1} !important;
 }}
 
-/* ── Black Container & Grey Input ── */
+/* ── Black Container & Grey Input with THIN BOUNDARY ── */
 [data-testid="stBottom"] > div {{
     padding: 1rem 1rem 1.5rem 1rem !important;
     background: linear-gradient(to top, {bg_main} 80%, transparent) !important; border: none !important;
@@ -488,8 +538,8 @@ header[data-testid="stHeader"] {{
 [data-testid="stChatInput"] {{ 
     background-color: #000000 !important; /* Pure black surrounding box */
     border: 1px solid rgba(255,255,255,0.1) !important; 
-    padding: 8px !important; 
-    border-radius: 16px !important;
+    padding: 2px !important; /* Extremely minimal padding for the THIN boundary */
+    border-radius: 14px !important;
     max-width: 860px !important; 
     margin: 0 auto !important; 
 }}
@@ -539,18 +589,16 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# ── FLOATING THEME TOGGLE (In Main Body, Top Left, Below Header) ──────────────
+st.markdown('<div id="theme-toggle-marker"></div>', unsafe_allow_html=True)
+if st.button(toggle_icon, key="theme_toggle", help="Toggle dark/light mode"):
+    st.session_state.dark_mode = not st.session_state.dark_mode
+    st.rerun()
 
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     
-    # 1. Theme toggle placed strictly in the top right corner above the DocAI logo
-    col_empty, col_toggle = st.columns([4, 1])
-    with col_toggle:
-        if st.button(toggle_icon, key="theme_toggle", help="Toggle dark/light mode"):
-            st.session_state.dark_mode = not st.session_state.dark_mode
-            st.rerun()
-
-    # --- Custom Logo Design injected here ---
+    # --- Custom Logo Design injected cleanly ---
     st.markdown(f"""
     <div class="custom-logo-wrapper">
         <div class="custom-icon">
@@ -564,14 +612,15 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # File Uploader
+    # 1. Provide the Unique Key so we can safely track the state!
     uploaded_file = st.file_uploader(
         "Upload file",
         type=["pdf", "txt", "png", "jpg", "jpeg", "bmp", "tiff", "webp"],
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="doc_uploader"
     )
 
-    # 3. Upload Document Header with Animated Upward Arrow placed BELOW the upload box
+    # Upload Document Header with Animated Upward Arrow placed BELOW the upload box
     st.markdown(f"""
     <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 700; color: {text_primary}; margin-top: 5px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
         Upload Documents <span class="animated-arrow-up">↑</span>
