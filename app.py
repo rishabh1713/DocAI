@@ -1,6 +1,5 @@
 import sys
 import os
-import base64
 
 if sys.platform != "win32":
     try:
@@ -41,99 +40,138 @@ if "dark_mode" not in st.session_state:
 
 dark = st.session_state.dark_mode
 
+# ── Refined Modern Color Palette ──────────────────────────────────────────────
 if dark:
-    bg_main        = "#0d0f1a"
-    bg_sidebar     = "#111827"
-    bg_card        = "rgba(255,255,255,0.05)"
-    border_color   = "rgba(255,255,255,0.12)"
-    text_primary   = "#f0f2ff"
-    text_secondary = "rgba(240,242,255,0.60)"
-    text_muted     = "rgba(240,242,255,0.35)"
-    accent1        = "#5b7fff"
-    accent2        = "#a78bfa"
-    accent3        = "#34d399"
-    chip_bg        = "rgba(91,127,255,0.15)"
-    chip_border    = "rgba(91,127,255,0.40)"
-    chip_text      = "#93b4ff"
-    input_bg       = "#1a1f35"
-    input_border   = "rgba(91,127,255,0.4)"
+    bg_main        = "#09090b"  
+    bg_sidebar     = "#121214"
+    bg_card        = "rgba(39, 39, 42, 0.4)"
+    border_color   = "rgba(255, 255, 255, 0.08)"
+    text_primary   = "#fafafa"
+    text_secondary = "#a1a1aa"
+    text_muted     = "#52525b"
+    accent1        = "#6366f1"  
+    accent2        = "#8b5cf6"  
+    accent3        = "#10b981"  
+    chip_bg        = "rgba(99, 102, 241, 0.1)"
+    chip_border    = "rgba(99, 102, 241, 0.2)"
+    chip_text      = "#818cf8"
+    input_bg       = "#18181b"
+    input_border   = "rgba(255, 255, 255, 0.1)"
     toggle_icon    = "☀️"
-    upload_bg      = "#1e2438"
-    upload_border  = "rgba(91,127,255,0.5)"
-    upload_text    = "#c0ccff"
-    sidebar_label  = "#e0e6ff"
-    stat_bg        = "#1e2438"
-    stat_border    = "rgba(91,127,255,0.25)"
-    btn_bg         = "#1e2438"
-    btn_border     = "rgba(91,127,255,0.35)"
-    btn_text       = "#c0ccff"
-    shadow         = "0 4px 24px rgba(0,0,0,0.5)"
-    user_border    = "#5b7fff"
-    user_bg        = "rgba(91,127,255,0.08)"
-    asst_border    = "#34d399"
-    asst_bg        = "rgba(52,211,153,0.06)"
-    navbar_bg      = "rgba(13,15,26,0.97)"
-    wm_opacity     = "0.13"
-    welcome_bg     = "rgba(20,24,45,0.92)"
+    upload_bg      = "#18181b"
+    upload_border  = "rgba(99, 102, 241, 0.4)"
+    upload_text    = "#a1a1aa"
+    sidebar_label  = "#e4e4e7"
+    stat_bg        = "#18181b"
+    stat_border    = "rgba(255, 255, 255, 0.05)"
+    btn_bg         = "#18181b"
+    btn_border     = "rgba(255, 255, 255, 0.1)"
+    btn_text       = "#e4e4e7"
+    shadow         = "0 8px 32px rgba(0, 0, 0, 0.4)"
+    user_border    = "#6366f1"
+    user_bg        = "rgba(99, 102, 241, 0.05)"
+    asst_border    = "transparent"
+    asst_bg        = "rgba(39, 39, 42, 0.3)"
+    navbar_bg      = "rgba(9, 9, 11, 0.8)"
+    welcome_bg     = "rgba(18, 18, 20, 0.6)"
+    logo_doc_color = "#fafafa"
 else:
-    bg_main        = "#f0f2fa"
+    bg_main        = "#fafafa"
     bg_sidebar     = "#ffffff"
-    bg_card        = "rgba(255,255,255,0.9)"
-    border_color   = "rgba(59,91,219,0.15)"
-    text_primary   = "#111827"
-    text_secondary = "#374151"
-    text_muted     = "#9ca3af"
-    accent1        = "#3b5bdb"
-    accent2        = "#7c3aed"
-    accent3        = "#059669"
-    chip_bg        = "rgba(59,91,219,0.08)"
-    chip_border    = "rgba(59,91,219,0.25)"
-    chip_text      = "#3b5bdb"
+    bg_card        = "#ffffff"
+    border_color   = "rgba(0, 0, 0, 0.08)"
+    text_primary   = "#09090b"
+    text_secondary = "#52525b"
+    text_muted     = "#a1a1aa"
+    accent1        = "#4f46e5"  
+    accent2        = "#7c3aed"  
+    accent3        = "#059669"  
+    chip_bg        = "rgba(79, 70, 229, 0.08)"
+    chip_border    = "rgba(79, 70, 229, 0.2)"
+    chip_text      = "#4f46e5"
     input_bg       = "#ffffff"
-    input_border   = "rgba(59,91,219,0.35)"
+    input_border   = "rgba(0, 0, 0, 0.12)"
     toggle_icon    = "🌙"
-    upload_bg      = "#f0f4ff"
-    upload_border  = "rgba(59,91,219,0.35)"
-    upload_text    = "#3b5bdb"
-    sidebar_label  = "#111827"
-    stat_bg        = "#f0f4ff"
-    stat_border    = "rgba(59,91,219,0.2)"
-    btn_bg         = "#f0f4ff"
-    btn_border     = "rgba(59,91,219,0.25)"
-    btn_text       = "#3b5bdb"
-    shadow         = "0 4px 16px rgba(59,91,219,0.1)"
-    user_border    = "#3b5bdb"
-    user_bg        = "rgba(59,91,219,0.05)"
-    asst_border    = "#059669"
-    asst_bg        = "rgba(5,150,105,0.04)"
-    navbar_bg      = "rgba(255,255,255,0.97)"
-    wm_opacity     = "0.09"
-    welcome_bg     = "rgba(240,242,255,0.92)"
+    upload_bg      = "#f8fafc"
+    upload_border  = "rgba(79, 70, 229, 0.3)"
+    upload_text    = "#64748b"
+    sidebar_label  = "#09090b"
+    stat_bg        = "#f8fafc"
+    stat_border    = "rgba(0, 0, 0, 0.05)"
+    btn_bg         = "#ffffff"
+    btn_border     = "rgba(0, 0, 0, 0.12)"
+    btn_text       = "#09090b"
+    shadow         = "0 4px 20px rgba(0, 0, 0, 0.04)"
+    user_border    = "#4f46e5"
+    user_bg        = "rgba(79, 70, 229, 0.03)"
+    asst_border    = "transparent"
+    asst_bg        = "#ffffff"
+    navbar_bg      = "rgba(250, 250, 250, 0.8)"
+    welcome_bg     = "rgba(255, 255, 255, 0.7)"
+    logo_doc_color = "#0f172a" # Dark navy for light mode
 
-# ── Load logo ─────────────────────────────────────────────────────────────────
-logo_b64 = ""
-for name in ["logo.png", "logo.jpg", "logo.jpeg"]:
-    if os.path.exists(name):
-        with open(name, "rb") as f:
-            logo_b64 = base64.b64encode(f.read()).decode()
-        break
+logo_gradient = "linear-gradient(135deg, #2563eb, #9333ea)"
 
-logo_img_tag = f'<img src="data:image/png;base64,{logo_b64}" style="width:28px;height:28px;border-radius:7px;object-fit:contain;background:white;padding:2px;" />' if logo_b64 else '<div style="width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#5b7fff,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:white;">D</div>'
-
-wm_img = f'<img src="data:image/png;base64,{logo_b64}" style="width:100%;height:100%;object-fit:contain;" />' if logo_b64 else ""
-
+# ── Clean, Modern CSS Injection ───────────────────────────────────────────────
 st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-html, body, [class*="css"] {{ font-family: 'Outfit', sans-serif !important; }}
-#MainMenu, footer, header {{ visibility: hidden; }}
+html, body, [class*="css"] {{ font-family: 'Inter', sans-serif !important; }}
+h1, h2, h3, h4, h5, h6 {{ font-family: 'Plus Jakarta Sans', sans-serif !important; }}
+#MainMenu, footer {{ visibility: hidden; display: none; }}
 
-.stApp {{
-    background-color: {bg_main} !important;
+/* Bring back the native expand sidebar button and style it */
+header[data-testid="stHeader"] {{
+    background: transparent !important;
+    z-index: 100000 !important;
+}}
+[data-testid="collapsedControl"] {{
+    top: 70px !important; 
+    left: 15px !important;
+    background: {bg_card} !important;
+    border: 1px solid {border_color} !important;
+    border-radius: 8px !important;
+    box-shadow: {shadow} !important;
+    z-index: 100000 !important;
+    transition: all 0.2s ease;
+    padding: 0.2rem !important;
+}}
+[data-testid="collapsedControl"]:hover {{
+    background: {chip_bg} !important;
+    border-color: {accent1} !important;
+}}
+[data-testid="collapsedControl"] svg {{
+    fill: {text_primary} !important;
+    color: {text_primary} !important;
 }}
 
-/* ── Sidebar ── */
+.stApp {{ background-color: {bg_main} !important; }}
+
+/* ── The Theme Toggle Button Positioned in Navbar ── */
+div[data-testid="stMainBlockContainer"] .stButton:first-of-type {{
+    position: fixed;
+    top: 10px;
+    right: 24px;
+    z-index: 100001;
+    width: auto;
+}}
+div[data-testid="stMainBlockContainer"] .stButton:first-of-type button {{
+    background: {bg_card} !important;
+    border: 1px solid {border_color} !important;
+    border-radius: 8px !important;
+    padding: 0.35rem 0.6rem !important;
+    box-shadow: {shadow} !important;
+    transition: all 0.2s ease;
+    font-size: 1.1rem !important;
+}}
+div[data-testid="stMainBlockContainer"] .stButton:first-of-type button:hover {{
+    background: {chip_bg} !important;
+    border-color: {accent1} !important;
+    transform: translateY(-1px);
+}}
+
+/* ── Sidebar Elements ── */
 [data-testid="stSidebar"] {{
     background: {bg_sidebar} !important;
     border-right: 1px solid {border_color} !important;
@@ -147,33 +185,49 @@ html, body, [class*="css"] {{ font-family: 'Outfit', sans-serif !important; }}
 }}
 [data-testid="stSidebar"] [data-testid="stFileUploader"] {{
     background: {upload_bg} !important;
-    border: 2px dashed {upload_border} !important;
+    border: 1.5px dashed {upload_border} !important;
     border-radius: 12px !important;
+    transition: all 0.2s ease;
+}}
+[data-testid="stSidebar"] [data-testid="stFileUploader"]:hover {{
+    border-color: {accent1} !important;
+    background: {chip_bg} !important;
 }}
 [data-testid="stSidebar"] [data-testid="stFileUploader"] * {{
     color: {upload_text} !important;
 }}
 [data-testid="stSidebar"] .stButton > button {{
     background: {btn_bg} !important;
-    border: 1.5px solid {btn_border} !important;
+    border: 1px solid {btn_border} !important;
     color: {btn_text} !important;
-    border-radius: 10px !important;
-    font-family: 'Outfit', sans-serif !important;
-    font-weight: 600 !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease;
+    padding: 0.5rem 1rem !important;
+}}
+[data-testid="stSidebar"] .stButton > button:hover {{
+    border-color: {text_secondary} !important;
+    transform: translateY(-1px);
 }}
 [data-testid="stSidebar"] .stButton > button[kind="primary"] {{
-    background: linear-gradient(135deg, {accent1}, {accent2}) !important;
+    background: {logo_gradient} !important;
     border: none !important;
     color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3) !important;
+}}
+[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {{
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+    transform: translateY(-2px);
 }}
 
 /* ── Top navbar ── */
 .top-navbar {{
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 52px;
+    height: 56px;
     background: {navbar_bg};
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid {border_color};
     display: flex;
     align-items: center;
@@ -184,72 +238,100 @@ html, body, [class*="css"] {{ font-family: 'Outfit', sans-serif !important; }}
 .navbar-left {{
     display: flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.75rem;
 }}
 .navbar-wordmark {{
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
     letter-spacing: -0.02em;
     display: flex;
     align-items: baseline;
-    gap: 0px;
 }}
 .navbar-doc {{ color: {text_primary}; }}
 .navbar-ai {{
-    background: linear-gradient(135deg, {accent1}, {accent2});
+    background: {logo_gradient};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }}
 .navbar-tagline {{
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     color: {text_muted};
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding-left: 0.55rem;
+    letter-spacing: 0.05em;
+    padding-left: 0.75rem;
     border-left: 1px solid {border_color};
-    font-weight: 400;
-    margin-left: 0.3rem;
+    font-weight: 500;
+    margin-left: 0.25rem;
 }}
 
-/* DocAI badge top RIGHT */
-.navbar-right {{
+/* ── Sidebar Custom Logo Component ── */
+.custom-logo-wrapper {{
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: {btn_bg};
-    border: 1px solid {btn_border};
-    border-radius: 10px;
-    padding: 0.28rem 0.7rem 0.28rem 0.45rem;
+    gap: 12px;
+    padding: 5px 0 25px 0;
 }}
-.navbar-right-text {{
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+.custom-icon {{
+    width: 32px;
+    height: 38px;
+    background: {logo_gradient};
+    border-radius: 4px 14px 14px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-left: 6px;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    position: relative;
 }}
-.nr-doc {{ color: {text_primary}; }}
-.nr-ai {{
-    background: linear-gradient(135deg, {accent1}, {accent2});
+.custom-icon::after {{
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: {logo_gradient};
+    border-radius: 0 0 14px 4px;
+    z-index: -1;
+    opacity: 0.6;
+}}
+.custom-icon-line {{
+    width: 16px;
+    height: 3px;
+    background: #ffffff;
+    border-radius: 2px;
+}}
+.custom-icon-line.short {{ width: 10px; }}
+.custom-text {{
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}}
+.custom-text-doc {{ color: {logo_doc_color}; }}
+.custom-text-ai {{
+    background: {logo_gradient};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }}
 
 /* ── Main content ── */
 .main .block-container {{
-    padding-top: 4.2rem !important;
-    padding-bottom: 2rem !important;
-    max-width: 820px !important;
+    padding-top: 5rem !important;
+    padding-bottom: 6rem !important;
+    max-width: 860px !important;
 }}
 
-/* ── Welcome section with logo watermark behind ── */
+/* ── Welcome section ── */
 .welcome-wrap {{
     position: relative;
-    max-width: 580px;
-    margin: 0.5rem auto 1.5rem;
-    border-radius: 20px;
+    max-width: 640px;
+    margin: 2rem auto;
+    border-radius: 24px;
     overflow: hidden;
 }}
 .welcome-logo-bg {{
@@ -257,246 +339,165 @@ html, body, [class*="css"] {{ font-family: 'Outfit', sans-serif !important; }}
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 85%;
-    height: 85%;
-    opacity: {wm_opacity};
-    filter: blur(6px) saturate(0.4);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    filter: blur(40px);
     z-index: 0;
     pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}}
-.welcome-logo-bg img {{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
 }}
 .welcome-card {{
     position: relative;
     z-index: 1;
     background: {welcome_bg};
     border: 1px solid {border_color};
-    border-radius: 20px;
-    padding: 2rem 2rem 1.75rem;
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
     text-align: center;
     box-shadow: {shadow};
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
 }}
-.welcome-icon {{ font-size: 2.5rem; margin-bottom: 0.6rem; }}
 .welcome-title {{
     color: {text_primary};
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.3rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.75rem;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
 }}
 .welcome-text {{
     color: {text_secondary};
-    font-size: 0.88rem;
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
 }}
 .steps-row {{
-    display: flex;
-    gap: 0.6rem;
-    justify-content: center;
-    flex-wrap: wrap;
+    display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
 }}
 .step {{
-    background: {chip_bg};
-    border: 1px solid {chip_border};
-    border-radius: 10px;
-    padding: 0.45rem 0.85rem;
-    font-size: 0.8rem;
-    color: {chip_text};
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-weight: 500;
+    background: {chip_bg}; border: 1px solid {chip_border}; border-radius: 8px;
+    padding: 0.5rem 1rem; font-size: 0.85rem; color: {chip_text};
+    display: flex; align-items: center; gap: 0.5rem; font-weight: 500;
 }}
 .step-num {{
-    background: linear-gradient(135deg, {accent1}, {accent2});
-    border-radius: 50%;
-    width: 18px; height: 18px;
+    background: {accent1}; border-radius: 4px; width: 20px; height: 20px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.65rem; font-weight: 700; color: white; flex-shrink: 0;
+    font-size: 0.7rem; font-weight: 700; color: white; flex-shrink: 0;
 }}
 
-/* ── Stat pills ── */
-.stat-row {{
-    display: flex; gap: 0.5rem; margin-bottom: 0.75rem;
-}}
+/* ── Stat pills & File card ── */
+.stat-row {{ display: flex; gap: 0.5rem; margin-bottom: 1rem; }}
 .stat-pill {{
-    flex: 1; background: {stat_bg};
-    border: 1px solid {stat_border};
-    border-radius: 10px; padding: 0.5rem; text-align: center;
+    flex: 1; background: {stat_bg}; border: 1px solid {stat_border};
+    border-radius: 8px; padding: 0.75rem; text-align: center;
 }}
-.stat-val {{
-    font-size: 1.15rem; font-weight: 700; color: {accent1};
-    font-family: 'JetBrains Mono', monospace;
-}}
-.stat-lbl {{
-    font-size: 0.6rem; color: {text_muted};
-    text-transform: uppercase; letter-spacing: 0.08em;
-}}
-
-/* ── File card ── */
+.stat-val {{ font-size: 1.25rem; font-weight: 600; color: {text_primary}; }}
+.stat-lbl {{ font-size: 0.65rem; color: {text_muted}; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.2rem; }}
 .file-card {{
-    background: {'rgba(52,211,153,0.08)' if dark else 'rgba(5,150,105,0.06)'};
-    border: 1px solid {'rgba(52,211,153,0.25)' if dark else 'rgba(5,150,105,0.2)'};
-    border-radius: 10px; padding: 0.65rem 0.9rem; margin-bottom: 0.65rem;
+    background: {'rgba(16, 185, 129, 0.05)' if dark else 'rgba(5, 150, 105, 0.03)'};
+    border: 1px solid {'rgba(16, 185, 129, 0.2)' if dark else 'rgba(5, 150, 105, 0.15)'};
+    border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.75rem;
 }}
-.file-card-label {{
-    font-size: 0.62rem; color: {text_muted};
-    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem;
-}}
-.file-card-name {{
-    font-size: 0.85rem; color: {text_primary}; font-weight: 600;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}}
+.file-card-label {{ font-size: 0.65rem; color: {text_muted}; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; font-weight: 500; }}
+.file-card-name {{ font-size: 0.9rem; color: {text_primary}; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 
 /* ── Chat messages ── */
 [data-testid="stChatMessage"] {{
     background: {bg_card} !important;
     border: 1px solid {border_color} !important;
-    border-radius: 14px !important;
-    margin-bottom: 0.75rem;
+    border-radius: 12px !important;
+    margin-bottom: 1rem;
+    padding: 1.25rem !important;
     box-shadow: {shadow};
 }}
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
-    border-left: 3px solid {user_border} !important;
     background: {user_bg} !important;
+    border: 1px solid {chip_border} !important;
+    border-left: 4px solid {user_border} !important;
 }}
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
-    border-left: 3px solid {asst_border} !important;
     background: {asst_bg} !important;
+    border-left: 4px solid transparent !important;
 }}
 [data-testid="stChatMessage"] p,
 [data-testid="stChatMessage"] li,
 [data-testid="stChatMessage"] h1,
 [data-testid="stChatMessage"] h2,
-[data-testid="stChatMessage"] h3 {{
-    color: {text_primary} !important;
+[data-testid="stChatMessage"] h3 {{ color: {text_primary} !important; line-height: 1.6 !important; }}
+[data-testid="stChatMessage"] code {{
+    background: {bg_main} !important; border: 1px solid {border_color} !important;
+    border-radius: 4px !important; padding: 0.2rem 0.4rem !important;
+    font-family: 'JetBrains Mono', monospace !important; font-size: 0.85em !important; color: {accent1} !important;
 }}
 
-/* ── Chat input — truly compact, no surrounding box ── */
+/* ── Chat input ── */
 [data-testid="stBottom"] > div {{
-    padding: 0.4rem 0 0.4rem 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+    padding: 1rem 1rem 1.5rem 1rem !important;
+    background: linear-gradient(to top, {bg_main} 80%, transparent) !important; border: none !important;
 }}
-[data-testid="stBottom"] {{
-    background: transparent !important;
-    border-top: 1px solid {border_color} !important;
-    padding: 0 !important;
-}}
-[data-testid="stChatInput"] {{
-    background: transparent !important;
-    border: none !important;
-    padding: 0.3rem 0 !important;
-}}
+[data-testid="stChatInput"] {{ background: transparent !important; border: none !important; padding: 0 !important; max-width: 860px !important; margin: 0 auto !important; }}
 [data-testid="stChatInput"] textarea {{
-    background: {input_bg} !important;
-    border: 1.5px solid {input_border} !important;
-    border-radius: 12px !important;
-    color: {text_primary} !important;
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 0.9rem !important;
-    min-height: 46px !important;
-    max-height: 46px !important;
-    height: 46px !important;
-    padding: 12px 50px 12px 16px !important;
-    resize: none !important;
-    overflow: hidden !important;
-    line-height: 1.3 !important;
+    background: {input_bg} !important; border: 1px solid {input_border} !important;
+    border-radius: 12px !important; color: {text_primary} !important;
+    font-size: 0.95rem !important; min-height: 52px !important; max-height: 150px !important;
+    padding: 14px 45px 14px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; transition: border-color 0.2s ease;
 }}
-[data-testid="stChatInput"] textarea::placeholder {{
-    color: {text_muted} !important;
-}}
+[data-testid="stChatInput"] textarea:focus {{ border-color: {accent1} !important; }}
 
-/* ── Progress bar ── */
-.stProgress > div > div > div > div {{
-    background: linear-gradient(90deg, {accent1}, {accent2}) !important;
-    border-radius: 8px !important;
+/* ── Suggestions Buttons ── */
+.stButton > button[key^="sug_"] {{
+    background: {bg_card} !important; border: 1px solid {border_color} !important; color: {text_secondary} !important;
+    border-radius: 8px !important; padding: 0.75rem !important; font-size: 0.85rem !important; text-align: left !important; justify-content: flex-start !important;
 }}
+.stButton > button[key^="sug_"]:hover {{ background: {chip_bg} !important; border-color: {chip_border} !important; color: {text_primary} !important; }}
 
-/* ── Alerts ── */
-.stSuccess > div {{
-    background: {'rgba(52,211,153,0.1)' if dark else 'rgba(5,150,105,0.08)'} !important;
-    border: 1px solid {'rgba(52,211,153,0.3)' if dark else 'rgba(5,150,105,0.25)'} !important;
-    border-radius: 10px !important; color: {text_primary} !important;
-}}
-.stInfo > div {{
-    background: {'rgba(91,127,255,0.1)' if dark else 'rgba(59,91,219,0.08)'} !important;
-    border: 1px solid {'rgba(91,127,255,0.25)' if dark else 'rgba(59,91,219,0.2)'} !important;
-    border-radius: 10px !important; color: {text_primary} !important;
-}}
-.stError > div {{
-    background: rgba(239,68,68,0.1) !important;
-    border: 1px solid rgba(239,68,68,0.3) !important;
-    border-radius: 10px !important;
-}}
-.stWarning > div {{
-    background: rgba(245,158,11,0.1) !important;
-    border: 1px solid rgba(245,158,11,0.3) !important;
-    border-radius: 10px !important;
-}}
-
-.stButton > button {{
-    border-radius: 10px !important;
-    font-family: 'Outfit', sans-serif !important;
-    font-weight: 500 !important;
-    font-size: 0.83rem !important;
-    transition: all 0.15s ease !important;
-}}
-hr {{ border-color: {border_color} !important; }}
-::-webkit-scrollbar {{ width: 5px; }}
+.stProgress > div > div > div > div {{ background: {logo_gradient} !important; border-radius: 8px !important; }}
+hr {{ border-color: {border_color} !important; margin: 2rem 0 !important; }}
+::-webkit-scrollbar {{ width: 6px; }}
 ::-webkit-scrollbar-track {{ background: transparent; }}
-::-webkit-scrollbar-thumb {{
-    background: {'rgba(91,127,255,0.3)' if dark else 'rgba(59,91,219,0.2)'};
-    border-radius: 8px;
-}}
+::-webkit-scrollbar-thumb {{ background: {border_color}; border-radius: 8px; }}
+::-webkit-scrollbar-thumb:hover {{ background: {text_muted}; }}
 </style>
 """, unsafe_allow_html=True)
 
 # ── TOP NAVBAR ────────────────────────────────────────────────────────────────
-# LEFT: logo icon + DocAI wordmark + tagline
-# RIGHT: mini DocAI badge with logo icon
 st.markdown(f"""
 <div class="top-navbar">
     <div class="navbar-left">
-        {logo_img_tag}
         <div class="navbar-wordmark">
             <span class="navbar-doc">Doc</span><span class="navbar-ai">AI</span>
         </div>
-        <span class="navbar-tagline">AI Study Assistant</span>
-    </div>
-    <div class="navbar-right">
-        {logo_img_tag}
-        <div class="navbar-right-text">
-            <span class="nr-doc">Doc</span><span class="nr-ai">AI</span>
-        </div>
+        <span class="navbar-tagline">STUDY ASSISTANT</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── DARK/LIGHT TOGGLE — positioned below navbar ───────────────────────────────
-# Hidden via CSS from navbar, placed as Streamlit button
-st.markdown("<div style='height:0.1rem'></div>", unsafe_allow_html=True)
-_, tcol = st.columns([14, 1])
-with tcol:
-    if st.button(toggle_icon, key="theme_toggle", help="Toggle dark/light mode"):
-        st.session_state.dark_mode = not st.session_state.dark_mode
-        st.rerun()
+# ── DARK/LIGHT TOGGLE (Positioned via CSS into Navbar Right) ──────────────────
+if st.button(toggle_icon, key="theme_toggle", help="Toggle dark/light mode"):
+    st.session_state.dark_mode = not st.session_state.dark_mode
+    st.rerun()
 
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
 with st.sidebar:
+    # --- Custom Logo Design injected here ---
     st.markdown(f"""
-    <div style='font-size:1rem;font-weight:700;color:{sidebar_label};
-    font-family:Space Grotesk,sans-serif;margin-bottom:0.6rem;padding-top:0.5rem'>
-    📂 Upload Notes
+    <div class="custom-logo-wrapper">
+        <div class="custom-icon">
+            <div class="custom-icon-line"></div>
+            <div class="custom-icon-line"></div>
+            <div class="custom-icon-line short"></div>
+        </div>
+        <div class="custom-text">
+            <span class="custom-text-doc">Doc</span><span class="custom-text-ai">AI</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div style='font-size:0.9rem;font-weight:600;color:{sidebar_label};
+    font-family:Plus Jakarta Sans,sans-serif;margin-bottom:0.8rem;'>
+    📂 Upload Documents
     </div>
     """, unsafe_allow_html=True)
 
@@ -572,7 +573,7 @@ with st.sidebar:
     if st.session_state.notes_loaded:
         st.markdown(f"""
         <div class="file-card">
-            <div class="file-card-label">Active File</div>
+            <div class="file-card-label">Active Document</div>
             <div class="file-card-name">📄 {st.session_state.file_name}</div>
         </div>
         <div class="stat-row">
@@ -587,7 +588,7 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("🗑️ Clear Notes", use_container_width=True):
+        if st.button("🗑️ Clear Context", use_container_width=True):
             clear_collection()
             st.session_state.notes_loaded = False
             st.session_state.messages = []
@@ -597,33 +598,29 @@ with st.sidebar:
             st.rerun()
     else:
         st.markdown(f"""
-        <div style='color:{upload_text};font-size:0.82rem;line-height:1.8;padding:0.3rem 0;'>
-        ⬆️ Upload a PDF, image,<br>or text file to get started.
+        <div style='color:{upload_text};font-size:0.85rem;line-height:1.6;padding:0.5rem 0;'>
+        Upload a PDF, image, or text file to inject context into the AI.
         </div>
         """, unsafe_allow_html=True)
 
-    if st.button("🧹 Clear Chat", use_container_width=True):
+    if st.button("🧹 Clear Chat History", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
     st.divider()
     st.markdown(f"""
-    <div style='font-size:0.7rem;color:{text_muted};line-height:2;'>
-    🟦 Groq · LLaMA 3.3<br>
-    🟪 ChromaDB · Vector DB<br>
-    🟩 PyMuPDF · Groq Vision
+    <div style='font-size:0.75rem;color:{text_muted};line-height:1.8;text-align:center;'>
+    Powered by <b>Groq LLaMA 3.3</b><br>
+    ChromaDB & PyMuPDF
     </div>
     """, unsafe_allow_html=True)
 
 # ── MAIN AREA ─────────────────────────────────────────────────────────────────
 if not st.session_state.messages:
     if not st.session_state.notes_loaded:
-        # Welcome card with logo blurred BEHIND it
         st.markdown(f"""
         <div class="welcome-wrap">
-            <div class="welcome-logo-bg">
-                {wm_img}
-            </div>
+            <div class="welcome-logo-bg"></div>
             <div class="welcome-card">
                 <div class="welcome-title">Welcome to DocAI</div>
                 <div class="welcome-text">
@@ -631,9 +628,9 @@ if not st.session_state.messages:
                     Powered by Groq's LLaMA3 for lightning-fast answers.
                 </div>
                 <div class="steps-row">
-                    <div class="step"><div class="step-num">1</div>Upload a PDF or image</div>
-                    <div class="step"><div class="step-num">2</div>Click Process File</div>
-                    <div class="step"><div class="step-num">3</div>Ask your question</div>
+                    <div class="step"><div class="step-num">1</div>Upload File</div>
+                    <div class="step"><div class="step-num">2</div>Process</div>
+                    <div class="step"><div class="step-num">3</div>Ask Away</div>
                 </div>
             </div>
         </div>
@@ -641,20 +638,18 @@ if not st.session_state.messages:
     else:
         st.markdown(f"""
         <div class="welcome-wrap">
-            <div class="welcome-logo-bg">
-                {wm_img}
-            </div>
+            <div class="welcome-logo-bg"></div>
             <div class="welcome-card">
-                <div class="welcome-title">✅ Notes loaded! Start asking.</div>
+                <div class="welcome-title">✅ Context Loaded</div>
                 <div class="welcome-text">
-                    <b style="color:{accent1}">{st.session_state.file_name}</b> is ready.<br>
-                    {st.session_state.total_pages} pages · {st.session_state.total_chunks} chunks indexed
+                    <b style="color:{accent1}">{st.session_state.file_name}</b> is ready for queries.<br>
+                    Indexed {st.session_state.total_pages} pages across {st.session_state.total_chunks} vector chunks.
                 </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown(f"<div style='color:{text_secondary};font-weight:600;font-size:0.88rem;margin-bottom:0.4rem;'>💡 Try asking:</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='color:{text_secondary};font-weight:600;font-size:0.85rem;margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.05em;'>💡 Suggested Queries</div>", unsafe_allow_html=True)
         suggestions = [
             "📝 Summarize the main topics",
             "🔑 What are the key concepts?",
@@ -666,7 +661,7 @@ if not st.session_state.messages:
         cols = st.columns(3)
         for i, s in enumerate(suggestions):
             with cols[i % 3]:
-                if st.button(s, use_container_width=True, key=f"sug_{i}"):
+                if st.button(s, use_container_width=True, key=f"sug_btn_{i}"):
                     st.session_state.suggested_question = s
                     st.rerun()
 
@@ -683,18 +678,18 @@ if st.session_state.suggested_question:
     with st.chat_message("user"):
         st.markdown(question)
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
+        with st.spinner("Analyzing context..."):
             try:
                 chunks = retrieve_relevant_chunks(question)
                 answer = generate_answer(question, chunks)
             except Exception as e:
-                answer = f"❌ Something went wrong: {e}"
+                answer = f"❌ Error retrieving data: {e}"
         st.markdown(answer)
         st.session_state.messages.append({"role": "assistant", "content": answer})
     st.rerun()
 
 # ── Chat input ────────────────────────────────────────────────────────────────
-if question := st.chat_input("Ask about your notes, or anything at all..."):
+if question := st.chat_input("Ask about your notes, or anything else..."):
     NOTE_KEYWORDS = [
         "summarize", "explain", "what is", "what are", "define",
         "chapter", "topic", "concept", "notes", "document", "pdf",
@@ -711,7 +706,7 @@ if question := st.chat_input("Ask about your notes, or anything at all..."):
         st.markdown(question)
 
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
+        with st.spinner("Generating response..."):
             try:
                 if is_about_notes:
                     chunks = retrieve_relevant_chunks(question)
@@ -756,9 +751,9 @@ if question := st.chat_input("Ask about your notes, or anything at all..."):
                                 {"role": "user", "content": question}
                             ]
                         )
-                        answer = f"*Answering from general knowledge*\n\n{response.choices[0].message.content}"
+                        answer = f"*General Knowledge Fallback*\n\n{response.choices[0].message.content}"
             except Exception as e:
-                answer = f"❌ Something went wrong: {e}"
+                answer = f"❌ Encountered an issue: {e}"
 
         st.markdown(answer)
         st.session_state.messages.append({"role": "assistant", "content": answer})
