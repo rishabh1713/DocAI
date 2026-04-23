@@ -1,34 +1,28 @@
-# 📚 AI Study Assistant
+# 📘 DocAI — Your AI Study Buddy
 
-A RAG (Retrieval Augmented Generation) based study tool built with Streamlit.  
-Upload your notes → Ask questions → Get answers grounded in your own material.
+> **Learn Smarter. Ask Better. Achieve More.**
+
+DocAI is a RAG-based AI study assistant that lets you upload your notes, PDFs, or images and ask questions — getting answers grounded in your own material. Built with a clean dark/light UI, OCR support, and blazing-fast responses via Groq.
 
 ---
 
 ## 🚀 Live Demo
 
-> Deployed on Streamlit Cloud → [https://docai17r.streamlit.app/](https://share.streamlit.io)
+> [**Try DocAI Live →**](https://docai17r.streamlit.app/)
+
 ---
 
-## 🧠 How It Works
+## ✨ Features
 
-```
-Your PDF/TXT notes
-      ↓
-Extract text (PyPDF)
-      ↓
-Split into chunks (LangChain)
-      ↓
-Store in vector DB (ChromaDB)
-      ↓
-User asks a question
-      ↓
-Find relevant chunks (similarity search)
-      ↓
-Send chunks + question to LLM (Groq)
-      ↓
-Answer displayed in chat
-```
+- 📄 **PDF, TXT, and Image upload** — drag and drop any study material
+- 🤖 **RAG pipeline** — answers are grounded in your uploaded content
+- 🖼️ **OCR support** — extracts text from images and image-heavy PDFs using Groq Vision API
+- 🧠 **Smart question routing** — detects if a question is about your notes or general knowledge and responds accordingly
+- 🌗 **Dark / Light mode toggle** — switch themes instantly
+- 📊 **Live progress bar** — shows real-time page processing status on large PDFs
+- 💡 **Suggested queries** — one-click starter questions after uploading
+- 🗂️ **Multi-format OCR** — handles pure text pages, image-only pages, and mixed pages separately for maximum accuracy
+- 💬 **General chat fallback** — answers general questions even without uploaded notes using Groq LLaMA3
 
 ---
 
@@ -36,12 +30,14 @@ Answer displayed in chat
 
 | Layer | Tool | Purpose |
 |---|---|---|
-| UI | Streamlit | Chat interface + file upload |
-| PDF Reading | PyPDF | Extract text from PDF files |
-| Text Chunking | LangChain | Split text into searchable pieces |
-| Vector Database | ChromaDB | Store and search text embeddings |
-| LLM | Groq (LLaMA3-8b) | Generate answers from context |
-| Config | python-dotenv | Manage API keys securely |
+| UI | Streamlit | Chat interface, file upload, dark/light toggle |
+| Styling | Custom CSS + Google Fonts | Inter, Plus Jakarta Sans, JetBrains Mono |
+| PDF Reading | PyPDF + PyMuPDF (fitz) | Text extraction and page rendering |
+| OCR | Groq Vision API (Pixtral / LLaMA4 Scout) | Image and scanned page text extraction |
+| Text Chunking | LangChain | Splits text into overlapping 500-char chunks |
+| Vector Database | ChromaDB | Stores and searches text embeddings |
+| LLM | Groq · LLaMA 3.3 70B Versatile | Answer generation |
+| Config | python-dotenv | Secure API key management |
 
 ---
 
@@ -49,29 +45,84 @@ Answer displayed in chat
 
 ```
 ai-study-assistant/
+│
 ├── app.py                          # Streamlit UI — entry point only
-├── packages.txt                    # System dependencies for Streamlit Cloud
+├── logo.jpg                        # DocAI logo (used in navbar + watermark)
+├── packages.txt                    # System deps for Streamlit Cloud
 ├── requirements.txt                # Python dependencies
 ├── .env                            # API keys (never commit this!)
-├── .gitignore                      # Excludes .env, venv, __pycache__
+├── .gitignore
 ├── README.md
 │
 ├── config/
 │   ├── __init__.py
-│   └── settings.py                 # All config: model, chunk size, paths
+│   └── settings.py                 # Model names, chunk size, API keys, paths
 │
 ├── services/
 │   ├── __init__.py
-│   ├── ingestion_service.py        # PDF → text → chunks → ChromaDB
+│   ├── ingestion_service.py        # PDF/image → text → chunks → ChromaDB
 │   ├── retrieval_service.py        # Similarity search on stored chunks
-│   └── llm_service.py              # Prompt building + Groq LLM call
+│   ├── llm_service.py              # Prompt building + Groq LLM call
+│   └── vision_ocr_service.py       # Groq Vision API OCR for images/pages
 │
 └── utils/
     ├── __init__.py
-    └── file_handler.py             # Save and validate uploaded files
+    └── file_handler.py             # File save, validate, delete, is_image check
 ```
 
-Each file has a single responsibility — making the codebase easy to extend and debug.
+---
+
+## ⚙️ How It Works
+
+```
+Upload PDF / Image / TXT
+         ↓
+┌─────────────────────────────┐
+│     ingestion_service.py    │
+│                             │
+│  Text page? → PyPDF extract │
+│  Image page? → Groq Vision  │
+│  Mixed page? → Both         │
+│                             │
+│  Chunk text (500 chars)     │
+│  Store in ChromaDB          │
+└─────────────────────────────┘
+         ↓
+   User asks a question
+         ↓
+┌─────────────────────────────┐
+│    retrieval_service.py     │
+│  Similarity search → top 3  │
+│       chunks returned       │
+└─────────────────────────────┘
+         ↓
+┌─────────────────────────────┐
+│      llm_service.py         │
+│  Chunks + Question → Groq   │
+│  LLaMA 3.3 → Answer         │
+└─────────────────────────────┘
+         ↓
+   Answer shown in chat
+```
+
+---
+
+## 🧩 Design Principles
+
+Each file has **one single responsibility**:
+
+| File | Responsibility |
+|---|---|
+| `app.py` | UI only — never processes data |
+| `settings.py` | All config — change model or params here |
+| `ingestion_service.py` | File reading, OCR routing, and indexing |
+| `retrieval_service.py` | Vector similarity search only |
+| `llm_service.py` | Prompt building and LLM call only |
+| `vision_ocr_service.py` | Groq Vision API calls only |
+| `file_handler.py` | Disk I/O — save, validate, delete |
+
+Want to swap Groq for OpenAI? Edit only `llm_service.py` and `vision_ocr_service.py`.
+Want to swap ChromaDB for Pinecone? Edit only `retrieval_service.py`.
 
 ---
 
@@ -79,18 +130,18 @@ Each file has a single responsibility — making the codebase easy to extend and
 
 **1. Clone the repo**
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-study-assistant.git
+git clone https://github.com/rishabh1713/ai-study-assistant.git
 cd ai-study-assistant
 ```
 
-**2. Create virtual environment**
+**2. Create and activate virtual environment**
 ```bash
 python -m venv venv
 
 # Windows
 venv\Scripts\activate
 
-# Mac/Linux
+# Mac / Linux
 source venv/bin/activate
 ```
 
@@ -99,21 +150,19 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**4. Add your API key**
+**4. Add your API keys**
 
-Create a `.env` file in the root folder:
+Create a `.env` file in the root:
 ```
-GROQ_API_KEY=gsk_your_key_here
+GROQ_API_KEY=gsk_your_groq_key_here
 ```
 
 Get your free Groq API key at [console.groq.com](https://console.groq.com)
 
-**5. Run the app**
+**5. Run**
 ```bash
 streamlit run app.py
 ```
-
-Open your browser at `http://localhost:8501`
 
 ---
 
@@ -121,51 +170,46 @@ Open your browser at `http://localhost:8501`
 
 1. Push your code to GitHub
 2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Click **New app** → select repo → set main file as `app.py`
+3. Click **New app** → select repo → main file `app.py`
 4. Go to **Advanced settings → Secrets** and add:
 ```toml
 GROQ_API_KEY = "gsk_your_key_here"
 ```
-5. Click **Deploy**
+5. Click **Deploy** ✅
 
 ---
 
-## 📌 Features
+## 📦 Requirements
 
-- Upload PDF or TXT notes
-- Ask questions in plain English
-- Answers generated only from your uploaded notes
-- Chat history maintained within session
-- Clear notes and start fresh anytime
-- Fast responses powered by Groq (LLaMA3)
+```
+streamlit
+pypdf
+pymupdf
+langchain
+langchain-community
+langchain-openai
+chromadb
+groq
+python-dotenv
+pillow
+numpy
+```
+
+`packages.txt` (for Streamlit Cloud):
+```
+libsqlite3-dev
+```
 
 ---
 
 ## 🔮 Future Improvements
 
-- [ ] Support multiple file uploads
+- [ ] Multiple file uploads in one session
 - [ ] Show source chunks alongside answers
-- [ ] Conversation memory across turns
-- [ ] Support for DOCX files
 - [ ] Export chat history as PDF
-
----
-
-## 🧩 Design Principles
-
-This project follows the **Single Responsibility Principle**:
-
-| File | Responsibility |
-|---|---|
-| `app.py` | UI only — never processes data |
-| `settings.py` | Config only — change model/params here |
-| `ingestion_service.py` | File reading and indexing only |
-| `retrieval_service.py` | Vector search only |
-| `llm_service.py` | LLM call only |
-| `file_handler.py` | Disk I/O only |
-
-Want to swap Groq for OpenAI? Edit only `llm_service.py`.  
-Want to swap ChromaDB for Pinecone? Edit only `retrieval_service.py`.
+- [ ] Support DOCX files
+- [ ] Hindi / regional language OCR support
+- [ ] Conversation memory across sessions
 
 ---
 
@@ -177,5 +221,6 @@ MIT — free to use and modify.
 
 ## 🙋 Author
 
-Built by [Rishabh Kumar](https://github.com/rishabh1713)  
-Feel free to ⭐ the repo if you found it useful!
+Built by [Rishabh Kumar](https://github.com/rishabh1713)
+
+⭐ Star the repo if you found it useful!
