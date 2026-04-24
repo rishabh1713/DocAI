@@ -23,7 +23,10 @@ def get_image_base64(filepath):
             return base64.b64encode(f.read()).decode()
     return None
 
-logo_b64 = get_image_base64("logo.jpg")
+logo_b64 = get_image_base64("logo.png")
+book_b64 = get_image_base64("book.png")
+robot_b64 = get_image_base64("robot.png")
+text_b64 = get_image_base64("text.png")
 
 st.set_page_config(
     page_title="DocAI – Study Assistant",
@@ -121,10 +124,10 @@ logo_gradient = "linear-gradient(135deg, #2563eb, #9333ea)"
 # Dynamic background CSS based on logo presence
 if logo_b64:
     welcome_bg_css = f"""
-    background: url('data:image/jpeg;base64,{logo_b64}') no-repeat center center;
+    background: url('data:image/png;base64,{logo_b64}') no-repeat center center;
     background-size: cover;
-    filter: blur(14px);
-    opacity: 0.35;
+    filter: blur(16px);
+    opacity: 0.25;
     """
 else:
     welcome_bg_css = """
@@ -371,8 +374,9 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
 .custom-logo-wrapper {{
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
-    padding: 10px 0 15px 0;
+    padding: 10px 0 5px 0;
 }}
 .custom-icon {{
     width: 38px;
@@ -420,6 +424,16 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }}
+.sidebar-tagline {{
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: {text_muted};
+    letter-spacing: 0.05em;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+}}
 
 /* ── Main content ── */
 .main .block-container {{
@@ -428,12 +442,27 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
     max-width: 860px !important;
 }}
 
+@keyframes floatUp {{
+    0% {{ opacity: 0; transform: translateY(30px) scale(0.95); }}
+    100% {{ opacity: 1; transform: translateY(0) scale(1); }}
+}}
+@keyframes floatHero {{
+    0% {{ transform: translateY(0); }}
+    50% {{ transform: translateY(-12px); filter: drop-shadow(0 15px 20px rgba(99, 102, 241, 0.3)); }}
+    100% {{ transform: translateY(0); }}
+}}
+@keyframes smoothZoom {{
+    0% {{ transform: scale(1); opacity: 0.15; }}
+    100% {{ transform: scale(1.1); opacity: 0.3; }}
+}}
+
 /* ── Welcome section ── */
 .welcome-wrap {{
     position: relative;
     max-width: 640px;
     margin: 4rem auto;
     border-radius: 24px;
+    animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }}
 .welcome-logo-bg {{
     position: absolute;
@@ -444,6 +473,56 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
     {welcome_bg_css}
     z-index: -1; 
     pointer-events: none;
+    animation: smoothZoom 10s infinite alternate ease-in-out;
+}}
+.hero-container {{
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 2rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}}
+.hero-glow {{
+    position: absolute;
+    top: -15%;
+    left: -15%;
+    width: 130%;
+    height: 130%;
+    background: radial-gradient(circle, {accent1} 0%, transparent 60%);
+    opacity: 0.5;
+    filter: blur(45px);
+    animation: glowPulse 4s infinite alternate ease-in-out;
+    z-index: -1;
+}}
+.hero-mask {{
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #ffffff;
+    border-radius: 36px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.25);
+    overflow: hidden;
+    animation: floatToken 6s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+}}
+.hero-layer {{
+    width: 95%;
+    height: 95%;
+    object-fit: contain;
+}}
+@keyframes floatToken {{
+    0% {{ transform: translateY(0) rotateX(2deg) rotateY(-2deg); box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.25); }}
+    50% {{ transform: translateY(-15px) rotateX(-2deg) rotateY(2deg); box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 35px 50px rgba(99, 102, 241, 0.4); }}
+    100% {{ transform: translateY(0) rotateX(2deg) rotateY(-2deg); box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.25); }}
+}}
+@keyframes glowPulse {{
+    0% {{ transform: scale(0.9); opacity: 0.2; }}
+    100% {{ transform: scale(1.1); opacity: 0.5; }}
 }}
 .welcome-card {{
     position: relative;
@@ -457,13 +536,20 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }}
+@keyframes textShine {{
+    to {{ background-position: 200% center; }}
+}}
 .welcome-title {{
-    color: {text_primary};
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2.2rem;
+    font-weight: 800;
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
+    background: linear-gradient(90deg, {text_primary} 0%, {accent1} 50%, {text_primary} 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShine 4s linear infinite;
 }}
 .welcome-text {{
     color: {text_secondary};
@@ -502,6 +588,10 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
 .file-card-name {{ font-size: 0.9rem; color: {text_primary}; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 
 /* ── Chat messages ── */
+@keyframes slideUpFade {{
+    0% {{ opacity: 0; transform: translateY(20px); }}
+    100% {{ opacity: 1; transform: translateY(0); }}
+}}
 [data-testid="stChatMessage"] {{
     background: {bg_card} !important;
     border: 1px solid {border_color} !important;
@@ -509,6 +599,7 @@ div[data-testid="element-container"]:has(#theme-toggle-marker) + div[data-testid
     margin-bottom: 1rem;
     padding: 1.25rem !important;
     box-shadow: {shadow};
+    animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }}
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
     background: {user_bg} !important;
@@ -609,6 +700,9 @@ with st.sidebar:
         <div class="custom-text">
             <span class="custom-text-doc">Doc</span><span class="custom-text-ai">AI</span>
         </div>
+    </div>
+    <div class="sidebar-tagline">
+        YOUR AI STUDY BUDDY
     </div>
     """, unsafe_allow_html=True)
 
@@ -728,6 +822,37 @@ with st.sidebar:
         st.rerun()
 
     st.divider()
+
+    # ── ADVANCED EXPANDERS ──
+    with st.expander("✨ AI Capabilities", expanded=False):
+        st.markdown(f"""
+        <div style="font-size:0.85rem; color:{text_secondary}; line-height:1.5;">
+        • <b>Smart Q&A:</b> Ask complex questions based on your documents.<br>
+        • <b>Summarization:</b> Quickly grasp long chapters.<br>
+        • <b>Contextual Memory:</b> The AI remembers the context of uploaded files.
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with st.expander("📁 Supported Formats", expanded=False):
+        st.markdown(f"""
+        <div style="font-size:0.85rem; color:{text_secondary}; line-height:1.5;">
+        • <b>PDF:</b> Full text parsing with PyMuPDF<br>
+        • <b>Images:</b> PNG, JPG, JPEG, WEBP (OCR supported)<br>
+        • <b>Text:</b> Raw TXT files
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with st.expander("⚙️ System Specs", expanded=False):
+        st.markdown(f"""
+        <div style="font-size:0.85rem; color:{text_secondary}; line-height:1.5;">
+        • <b>Model:</b> Groq LLaMA 3.3<br>
+        • <b>Vector Store:</b> ChromaDB<br>
+        • <b>Speed:</b> ~800 tokens/sec<br>
+        • <b>Embeddings:</b> SentenceTransformers
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
     st.markdown(f"""
     <div style='font-size:0.75rem;color:{text_muted};line-height:1.8;text-align:center;'>
     Powered by <b>Groq LLaMA 3.3</b><br>
@@ -737,11 +862,14 @@ with st.sidebar:
 
 # ── MAIN AREA ─────────────────────────────────────────────────────────────────
 if not st.session_state.messages:
+    hero_img_html = f'<div class="hero-container"><div class="hero-glow"></div><div class="hero-mask"><img src="data:image/png;base64,{logo_b64}" class="hero-layer" alt="DocAI Logo"></div></div>' if logo_b64 else ""
+
     if not st.session_state.notes_loaded:
         st.markdown(f"""
         <div class="welcome-wrap">
             <div class="welcome-logo-bg"></div>
             <div class="welcome-card">
+                {hero_img_html}
                 <div class="welcome-title">Welcome to DocAI</div>
                 <div class="welcome-text">
                     Upload your notes, textbooks, or images and ask anything.<br>
@@ -760,6 +888,7 @@ if not st.session_state.messages:
         <div class="welcome-wrap">
             <div class="welcome-logo-bg"></div>
             <div class="welcome-card">
+                {hero_img_html}
                 <div class="welcome-title">✅ Context Loaded</div>
                 <div class="welcome-text">
                     <b style="color:{accent1}">{st.session_state.file_name}</b> is ready for queries.<br>
